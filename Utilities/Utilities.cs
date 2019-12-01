@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Utilities
 {
@@ -17,6 +16,40 @@ namespace Utilities
                     _outputDirectory.Create();
                 }
             }
+        }
+
+        static DirectoryInfo _inputDirectory = null;
+        public static DirectoryInfo InputDirectory
+        {
+            get => _inputDirectory;
+            set
+            {
+                _inputDirectory = value;
+                if (!_inputDirectory.Exists)
+                {
+                    throw new FileNotFoundException($"{_inputDirectory} was not found.");
+                }
+            }
+        }
+
+        public static FileInfo GetFileInfo(string file, bool deleteIfExists)
+        {
+            var fileInfo = new FileInfo(OutputDirectory.FullName + Path.DirectorySeparatorChar + file);
+            if(deleteIfExists && fileInfo.Exists)
+            {
+                fileInfo.Delete();
+            }
+            return fileInfo;
+        }
+
+        internal static DirectoryInfo GetDirectoryInfo(string directory)
+        {
+            var directoryInfo = new DirectoryInfo(_outputDirectory.FullName + Path.DirectorySeparatorChar + directory);
+            if (!directoryInfo.Exists)
+            {
+                directoryInfo.Create();
+            }
+            return directoryInfo;
         }
     }
 }
